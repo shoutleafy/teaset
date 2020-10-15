@@ -2,7 +2,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
@@ -20,7 +21,22 @@ export default class ActionPopoverItem extends Component {
     ...TouchableOpacity.defaultProps,
   };
 
-  buildProps() {
+  renderTitle() {
+    let {title} = this.props;
+
+    if ((title || title === '' || title === 0) && !React.isValidElement(title)) {
+      let textStyle = {
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        color: Theme.apItemTitleColor,
+        fontSize: Theme.apItemFontSize,
+      };
+      title = <Text style={textStyle} numberOfLines={1}>{title}</Text>;
+    }
+
+    return title;
+  }
+
+  render() {
     let {style, title, leftSeparator, rightSeparator, ...others} = this.props;
 
     style = [{
@@ -31,25 +47,9 @@ export default class ActionPopoverItem extends Component {
       borderRightWidth: rightSeparator ? Theme.apSeparatorWidth : 0,
     }].concat(style);
 
-    if ((title || title === 0) && !React.isValidElement(title)) {
-      let textStyle = {
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        color: Theme.apItemTitleColor,
-        fontSize: Theme.apItemFontSize,
-      };
-      title = <Text style={textStyle} numberOfLines={1}>{title}</Text>;
-    }
-
-    this.props = {style, title, leftSeparator, rightSeparator, ...others};
-  }
-
-  render() {
-    this.buildProps();
-
-    let {title, ...others} = this.props;
     return (
-      <TouchableOpacity {...others}>
-        {title}
+      <TouchableOpacity style={style} {...others}>
+        {this.renderTitle()}
       </TouchableOpacity>
     );
   }

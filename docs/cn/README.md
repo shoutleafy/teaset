@@ -47,18 +47,37 @@ import Label from 'teaset/components/Label/Label';
 ```
 
 ## 运行示例程序
-在 Teaset 包目录下执行以下命令:
+从 github clone teaset 工程(或者下载 zip 文件):
 ```
-cd example
+git clone https://github.com/rilyu/teaset.git
+cd teaset/example
 npm install
 ```
 在 iOS 下运行:
 ```
+cd ios && pod install && cd ..
 react-native run-ios
 ```
 在 Android 下运行:
 ```
 react-native run-android
+```
+
+## 动画流畅度
+在使用 debug 模式运行, 特别是在 Android 设备上运行时, 部分动画效果不太流畅, 有时会有卡顿现象, 这是由于 debug 模式下有日志输出、远程调试等操作比较耗时导致, 在 release 模式下运行完全没有问题。
+
+## iPhoneX
+从 0.6.0 开始全面支持 iPhoneX 、 iPhoneXS ，且默认**打开**自动适配开关。
+
+如使用了 SafeAreaView 请使用 ```Theme.set({fitIPhoneX: false})``` 手动关闭。
+
+## Redux
+如果你使用了 Redux ，需要使用 ```<TopView>``` 包裹 container ，用于给 Overlay 类型的组件提供容器(感谢 [@Alexorz](https://github.com/Alexorz) 的贡献)。
+
+```
+import { TopView } from 'teaset';
+
+container => () => <Provider store={store}><TopView>{container}</TopView></Provider>
 ```
 
 # 文档
@@ -95,11 +114,17 @@ react-native run-android
 
 [`<Projector />` 幻灯机](./Projector.md)
 
+[`<SegmentedBar />` 分段工具条](./SegmentedBar.md)
+
 [`<SegmentedView />` 分段器](./SegmentedView.md)
 
 [`<TabView />` 标签页](./TabView.md)
 
 [`<TransformView />` 可变视图](./TransformView.md)
+
+[`<AlbumView />` 相册视图](./AlbumView.md)
+
+[`<Wheel />` 滚轮](./Wheel.md)
 
 ## 浮层
 [`Overlay{}` 浮层](./Overlay.md)
@@ -115,6 +140,8 @@ react-native run-android
 [`PopoverPicker{}` 气泡选择器](./PopoverPicker.md)
 
 [`Menu{}` 菜单](./Menu.md)
+
+[`Drawer{}` 抽屉](./Drawer.md)
 
 [`ModalIndicator{}` 模态指示器](./ModalIndicator.md)
 

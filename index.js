@@ -17,10 +17,14 @@ import NavigationBar from './components/NavigationBar/NavigationBar';
 import ListRow from './components/ListRow/ListRow';
 import Carousel from './components/Carousel/Carousel';
 import Projector from './components/Projector/Projector';
+import SegmentedBar from './components/SegmentedBar/SegmentedBar';
 import SegmentedView from './components/SegmentedView/SegmentedView';
 import TabView from './components/TabView/TabView';
 import TransformView from './components/TransformView/TransformView';
+import AlbumView from './components/AlbumView/AlbumView';
+import Wheel from './components/Wheel/Wheel';
 
+import TopView from './components/Overlay/TopView';
 import Overlay from './components/Overlay/Overlay';
 import Toast from './components/Toast/Toast';
 import ActionSheet from './components/ActionSheet/ActionSheet';
@@ -28,6 +32,7 @@ import ActionPopover from './components/ActionPopover/ActionPopover';
 import PullPicker from './components/PullPicker/PullPicker';
 import PopoverPicker from './components/PopoverPicker/PopoverPicker';
 import Menu from './components/Menu/Menu';
+import Drawer from './components/Drawer/Drawer';
 import ModalIndicator from './components/ModalIndicator/ModalIndicator';
 
 import TeaNavigator from './components/TeaNavigator/TeaNavigator';
@@ -53,10 +58,14 @@ var Teaset = {
   ListRow,
   Carousel,
   Projector,
+  SegmentedBar,
   SegmentedView,
   TabView,
   TransformView,
+  AlbumView,
+  Wheel,
 
+  TopView,
   Overlay,
   Toast,
   ActionSheet,
@@ -64,6 +73,7 @@ var Teaset = {
   PullPicker,
   PopoverPicker,
   Menu,
+  Drawer,
   ModalIndicator,
 
   TeaNavigator,

@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 
 import {NavigationPage, ListRow, Projector, Button, Label, Input} from 'teaset';
@@ -46,10 +46,10 @@ export default class ProjectorExample extends NavigationPage {
     return (
       <ScrollView style={{flex: 1}}>
         <Projector style={{height: 238}} index={this.state.index}>
-          {this.renderSlide('#rgba(170, 240, 141, 0.1)')}
-          {this.renderSlide('#rgba(123, 207, 249, 0.1)')}
-          {this.renderSlide('#rgba(250, 231, 133, 0.1)')}
-          {this.renderSlide('#rgba(244, 131, 131, 0.1)')}
+          {this.renderSlide('rgba(170, 240, 141, 0.1)')}
+          {this.renderSlide('rgba(123, 207, 249, 0.1)')}
+          {this.renderSlide('rgba(250, 231, 133, 0.1)')}
+          {this.renderSlide('rgba(244, 131, 131, 0.1)')}
         </Projector>
         <View style={{height: 20}} />
         <ListRow

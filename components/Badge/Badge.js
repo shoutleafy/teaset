@@ -2,15 +2,16 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {View, Text} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {View, Text, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
 export default class Badge extends Component {
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     type: PropTypes.oneOf(['capsule', 'square', 'dot']),
     count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     countStyle: Text.propTypes.style,
@@ -23,8 +24,8 @@ export default class Badge extends Component {
     maxCount: 99,
   };
 
-  buildProps() {
-    let {style, type, count, countStyle, maxCount, children, ...others} = this.props;
+  buildStyle() {
+    let {style, type, count} = this.props;
 
     let width, height, minWidth, borderRadius, borderWidth, padding;
     switch (type) {
@@ -67,25 +68,35 @@ export default class Badge extends Component {
       flexDirection: 'row',
     }].concat(style);
 
-    if (type === 'dot') children = null;
+    return style;
+  }
+
+  renderInner() {
+    let {type, count, countStyle, maxCount, children} = this.props;
+
+    if (type === 'dot') return null;
     else if (count || count === 0) {
       countStyle = [{
         color: Theme.badgeTextColor,
         fontSize: Theme.badgeFontSize,
       }].concat(countStyle);
-      children = (
+      return (
         <Text style={countStyle} allowFontScaling={false} numberOfLines={1}>
           {count > maxCount ? maxCount + '+' : count}
         </Text>
       );
+    } else {
+      return children;
     }
-
-    this.props = {style, type, count, countStyle, maxCount, children, ...others};
   }
 
   render() {
-    this.buildProps();
-    return <View {...this.props} />;
+    let {style, children, type, count, countStyle, maxCount, ...others} = this.props;
+    return (
+      <View style={this.buildStyle()} {...others}>
+        {this.renderInner()}
+      </View>
+    );
   }
 
 }

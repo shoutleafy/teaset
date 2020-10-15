@@ -2,12 +2,13 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Text} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
-export default class NavigationTitle extends Text {
+export default class NavigationTitle extends Component {
 
   static propTypes = {
     ...Text.propTypes,
@@ -24,7 +25,7 @@ export default class NavigationTitle extends Text {
     tintColor: PropTypes.string,
   };
 
-  buildProps() {
+  render() {
     let {style, text, children, ...others} = this.props;
 
     style = [{
@@ -37,14 +38,11 @@ export default class NavigationTitle extends Text {
       fontSize: Theme.navTitleFontSize,
     }].concat(style);
 
-    if (text || text === 0) children = text;
-
-    this.props = {style, text, children, ...others};
-  }
-
-  render() {
-    this.buildProps();
-    return super.render();
+    return (
+      <Text style={style} {...others}>
+        {(text === null || text === undefined) ? children : text}
+      </Text>
+    );
   }
 
 }

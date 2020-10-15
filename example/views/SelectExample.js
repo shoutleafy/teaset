@@ -2,8 +2,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, Image, ScrollView} from 'react-native';
 
 import {NavigationPage, ListRow, Select, Label} from 'teaset';
 
@@ -18,36 +18,38 @@ export default class SelectExample extends NavigationPage {
   constructor(props) {
     super(props);
     this.items = [
-      'Apple',
-      'Banana',
-      'Cherry',
-      'Durian',
-      'Filbert',
-      'Grape',
-      'Hickory',
-      'Lemon',
-      'Mango',
+      'Aged Pu\'er',
+      'Bohea',
+      'Chrysanthemum',
+      'Hyson',
+      'Jasmine',
+      'Keemun',
+      'Loungjing',
+      'Pekoe',
+      'Tieguanyin',
     ];
     this.customItems = [
       {
         text: 'Long long long long long long long',
         value: 1,
-      },
-      {
+      }, {
         text: 'Short',
         value: 2,
-      }
+      }, {
+        text: <Image style={{width: 40, height: 40}} source={require('../images/teaset1_s.jpg')} />,
+        value: 3,
+      },
     ];
     Object.assign(this.state, {
-      valueSM: 'Size sm',
-      valueMD: 'Size md',
-      valueLG: 'Size lg',
+      valueSM: null,
+      valueMD: null,
+      valueLG: null,
       valueAuto: null,
       valuePull: null,
       valuePopover: null,
       valueReadonly: 'Readonly',
       valueDisable: null,
-      valueCustom: 'Custom',
+      valueCustom: null,
     });
   }
 
@@ -166,12 +168,13 @@ export default class SelectExample extends NavigationPage {
           detail={
             <Select
               style={{width: 200, backgroundColor: '#rgba(238, 169, 91, 0.1)', borderColor: '#8a6d3b'}}
+              size='lg'
               value={valueCustom}
               valueStyle={{flex: 1, color: '#8a6d3b', textAlign: 'right'}}
               items={this.customItems}
               getItemValue={(item, index) => item.value}
               getItemText={(item, index) => item.text}
-              iconTintColor='#8a6d3b'
+              icon={<Text style={{color: '#8a6d3b', fontSize: 16, paddingRight: 4}}>▼</Text>}
               placeholder='Select item'
               pickerTitle='Custom'
               onSelected={(item, index) => this.setState({valueCustom: item.value})}

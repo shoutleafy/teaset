@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {View, ScrollView} from 'react-native';
 
 import {NavigationPage, ListRow, PopoverPicker} from 'teaset';
@@ -18,15 +18,15 @@ export default class PopoverPickerExample extends NavigationPage {
   constructor(props) {
     super(props);
     this.items = [
-      'Apple',
-      'Banana',
-      'Cherry',
-      'Durian',
-      'Filbert',
-      'Grape',
-      'Hickory',
-      'Lemon',
-      'Mango',
+      'Aged Pu\'er',
+      'Bohea',
+      'Chrysanthemum',
+      'Hyson',
+      'Jasmine',
+      'Keemun',
+      'Loungjing',
+      'Pekoe',
+      'Tieguanyin',
     ];
     Object.assign(this.state, {
       selectedIndex: null,
@@ -35,9 +35,9 @@ export default class PopoverPickerExample extends NavigationPage {
   }
 
   show(view) {
-    view.measureInWindow((x, y, width, height) => {
+    view.measure((x, y, width, height, pageX, pageY) => {
       PopoverPicker.show(
-        {x, y, width, height},
+        {x: pageX, y: pageY, width, height},
         this.items,
         this.state.selectedIndex,
         (item, index) => this.setState({selectedIndex: index})
@@ -46,9 +46,9 @@ export default class PopoverPickerExample extends NavigationPage {
   }
 
   showModal(view) {
-    view.measureInWindow((x, y, width, height) => {
+    view.measure((x, y, width, height, pageX, pageY) => {
       PopoverPicker.show(
-        {x, y, width, height},
+        {x: pageX, y: pageY, width, height},
         this.items,
         this.state.modalSelectedIndex,
         (item, index) => this.setState({modalSelectedIndex: index}),

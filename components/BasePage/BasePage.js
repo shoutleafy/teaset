@@ -2,16 +2,18 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {Platform, BackAndroid, Navigator, View} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import ReactNative, {Platform, View, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
+import TeaNavigator from '../TeaNavigator/TeaNavigator';
 import KeyboardSpace from '../KeyboardSpace/KeyboardSpace';
 
 export default class BasePage extends Component {
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     scene: PropTypes.object, //转场效果
     autoKeyboardInsets: PropTypes.bool, //自动插入键盘占用空间
     keyboardTopInsets: PropTypes.number, //插入键盘占用空间顶部偏移，用于底部有固定占用空间(如TabNavigator)的页面
@@ -19,7 +21,7 @@ export default class BasePage extends Component {
 
   static defaultProps = {
     ...View.defaultProps,
-    scene: Navigator.SceneConfigs.Replace,
+    scene: TeaNavigator.SceneConfigs.Replace,
     autoKeyboardInsets: Platform.OS === 'ios',
     keyboardTopInsets: 0,
   };
@@ -31,19 +33,17 @@ export default class BasePage extends Component {
   constructor(props) {
     super(props);
     this.didMount = false; //代替被废弃的isMounted
+    this.isFocused = false; //this.state.isFocused move to this.isFocused
     this.state = {
-      isFocused: false,
     };
-  }
-
-  componentWillMount() {
-    if (!this.backListener && Platform.OS === 'android') {
-      this.backListener = BackAndroid.addEventListener('hardwareBackPress', () => this.onHardwareBackPress());
-    }
   }
 
   componentDidMount() {
     this.didMount = true;
+    if (!this.backListener && Platform.OS === 'android') {
+      let BackHandler = ReactNative.BackHandler ? ReactNative.BackHandler : ReactNative.BackAndroid;
+      this.backListener = BackHandler.addEventListener('hardwareBackPress', () => this.onHardwareBackPress());
+    }
   }
 
   componentWillUnmount() {
@@ -64,7 +64,7 @@ export default class BasePage extends Component {
 
   //Call after the scene transition by Navigator.onDidFocus
   onDidFocus() {
-    if (!this.state.isFocused) this.setState({isFocused: true});
+    this.isFocused = true;
   }
 
   //Call before the scene transition by Navigator.onWillFocus
@@ -83,14 +83,13 @@ export default class BasePage extends Component {
     return false;
   }
 
-  buildProps() {
-    let {style, ...others} = this.props;
+  buildStyle() {
+    let {style} = this.props;
     style = [{
       flex: 1,
-      height: 500,
       backgroundColor: Theme.pageColor,
     }].concat(style);
-    this.props = {style, ...others};
+    return style;
   }
 
   renderPage() {
@@ -98,15 +97,12 @@ export default class BasePage extends Component {
   }
 
   render() {
-    this.buildProps();
-    
-    let {autoKeyboardInsets, keyboardTopInsets, ...others} = this.props;
+    let {style, children, scene, autoKeyboardInsets, keyboardTopInsets, ...others} = this.props;
     return (
-      <View {...others}>
+      <View style={this.buildStyle()} {...others}>
         {this.renderPage()}
         {autoKeyboardInsets ? <KeyboardSpace topInsets={keyboardTopInsets} /> : null}
       </View>
     );
   }
 }
-

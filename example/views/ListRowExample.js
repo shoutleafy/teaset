@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {View, ScrollView, Image, Text} from 'react-native';
 
 import {NavigationPage, ListRow, Label} from 'teaset';
@@ -14,6 +14,10 @@ export default class ListRowExample extends NavigationPage {
     title: ' ListRow',
     showBackButton: true,
   };
+
+  constructor(props) {
+    super(props);
+  }
 
   renderPage() {
     return (
@@ -33,7 +37,16 @@ export default class ListRowExample extends NavigationPage {
         <ListRow title='Icon' icon={require('../icons/config.png')} />
         <ListRow title='Accessory indicator' accessory='indicator' />
         <ListRow title='Custom accessory' accessory={<Image source={require('../icons/location.png')} />} />
-        <ListRow title='Press able' onPress={() => alert('Press!')} bottomSeparator='full' />
+        <ListRow title='Press able' onPress={() => alert('Press!')} />
+        <ListRow
+          title='Swipe able'
+          detail='Swipe to show action buttons'
+          swipeActions={[
+            <ListRow.SwipeActionButton title='Cancel' />,
+            <ListRow.SwipeActionButton title='Remove' type='danger' onPress={() => alert('Remove')}/>,          
+          ]}
+          bottomSeparator='full'
+          />
       </ScrollView>
     );
   }

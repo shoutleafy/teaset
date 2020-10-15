@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {StyleSheet, View, PanResponder, Image, TouchableOpacity, Animated} from 'react-native';
 
 import {NavigationPage, Input} from 'teaset';
@@ -60,25 +60,6 @@ export default class PanResponderExample extends NavigationPage {
       onPanResponderRelease: (e, gestureState) => {
         console.log('onPanResponderRelease', e.nativeEvent, JSON.stringify(gestureState));
         this.handleTouches(e.nativeEvent.touches);
-
-if (this.layout) {
-  this.refs['view'].measure((x, y, width, height) => {
-    console.log('init layout', this.layout);
-    console.log('measure layout', x, y, width, height);
-    let {translateX, translateY, scale} = this.state;
-    let originX = this.layout.x + this.layout.width / 2;
-    let originY = this.layout.y + this.layout.height / 2;
-    let scaleOriginX = originX + translateX;
-    let scaleOriginY = originY + translateY;
-    let scaleWidth = this.layout.width * scale;
-    let scaleHeight = this.layout.height * scale;
-    let scaleX = scaleOriginX - scaleWidth / 2;
-    let scaleY = scaleOriginY - scaleHeight / 2;
-    console.log('transform layout', {x: scaleX, y: scaleY, width: scaleWidth, height: scaleHeight});
-  });
-}
-
-
       },
       onPanResponderTerminate: (e, gestureState) => {
         console.log('onPanResponderTerminate', e.nativeEvent, JSON.stringify(gestureState));
@@ -130,7 +111,7 @@ if (this.layout) {
       let scaleRate = distance1 / distance0;
       let scalePointX = (prevTouches[1].pageX + prevTouches[0].pageX) / 2;
       let scalePointY = (prevTouches[1].pageY + prevTouches[0].pageY) / 2;
-      this.refs['view'].measureInWindow((x, y, width, height) => {
+      this.refs['view'].measure((x, y, width, height, pageX, pageY) => {
         //view center point position
         let viewCenterX = x + width / 2;
         let viewCenterY = y + height / 2;
@@ -181,7 +162,7 @@ if (this.layout) {
   renderPage() {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.full} {...this.panResponder.panHandlers} />
+        <MyTouchableOpacity style={styles.full} {...this.panResponder.panHandlers} />
         <View style={styles.box} />
       </View>
     );
@@ -206,3 +187,100 @@ var styles = StyleSheet.create({
     bottom: 100,    
   },
 });
+
+class MyTouchableOpacity extends TouchableOpacity {
+
+  constructor(props) {
+    super(props);
+
+    let touchableHandleStartShouldSetResponder = this.touchableHandleStartShouldSetResponder;
+    let touchableHandleResponderTerminationRequest = this.touchableHandleResponderTerminationRequest;
+    let touchableHandleResponderGrant = this.touchableHandleResponderGrant;
+    let touchableHandleResponderMove = this.touchableHandleResponderMove;
+    let touchableHandleResponderRelease = this.touchableHandleResponderRelease;
+    let touchableHandleResponderTerminate = this.touchableHandleResponderTerminate;
+
+    this.touchableHandleStartShouldSetResponder = (e) => {
+      return this.onStartShouldSetResponder(touchableHandleStartShouldSetResponder, e);
+    }
+    this.touchableHandleResponderTerminationRequest = (e) => {
+      return this.onResponderTerminationRequest(touchableHandleResponderTerminationRequest, e);
+    }
+    this.touchableHandleResponderGrant = (e) => {
+      return this.onResponderGrant(touchableHandleResponderGrant, e);
+    }
+    this.touchableHandleResponderMove = (e) => {
+      this._opacityInactive();
+      return this.onResponderMove(touchableHandleResponderMove, e);
+    }
+    this.touchableHandleResponderRelease = (e) => {
+      return this.onResponderRelease(touchableHandleResponderRelease, e);
+    }
+    this.touchableHandleResponderTerminate = (e) => {
+      return this.onResponderTerminate(touchableHandleResponderTerminate, e);
+    }
+
+  }
+
+  onStartShouldSetResponder(s, e) {
+    console.log('==> onStartShouldSetResponder', e);
+    return s(e);
+  }
+
+  onResponderTerminationRequest(s, e) {
+    console.log('==> onResponderTerminationRequest', e);
+    return s(e);
+  }
+
+  onResponderGrant(s, e) {
+    console.log('==> onResponderGrant', e);
+    return s(e);
+  }
+
+  onResponderMove(s, e) {
+    console.log('==> onResponderMove', e);
+    return s(e);
+  }
+
+  onResponderRelease(s, e) {
+    console.log('==> onResponderRelease', e);
+    return s(e);
+  }
+
+  onResponderTerminate(s, e) {
+    console.log('==> onResponderTerminate', e);
+    return s(e);
+  }
+
+
+  // touchableHandleStartShouldSetResponder(e) {
+  //   console.log('===> touchableHandleStartShouldSetResponder', e);
+  //   super.touchableHandleStartShouldSetResponder(e);
+  // }
+
+  // touchableHandleResponderTerminationRequest(e) {
+  //   console.log('===> touchableHandleResponderTerminationRequest', e);
+  //   super.touchableHandleResponderTerminationRequest(e);
+  // }
+
+  // touchableHandleResponderGrant(e) {
+  //   console.log('===> touchableHandleResponderGrant', e);
+  //   super.touchableHandleResponderGrant(e);
+  // }
+
+  // touchableHandleResponderMove(e) {
+  //   console.log('===> touchableHandleResponderMove', e);
+  //   super.touchableHandleResponderMove(e);
+  // }
+
+  // touchableHandleResponderRelease(e) {
+  //   console.log('===> touchableHandleResponderRelease', e);
+  //   super.touchableHandleResponderRelease(e);
+  // }
+
+  // touchableHandleResponderTerminate(e) {
+  //   console.log('===> touchableHandleResponderTerminate', e);
+  //   super.touchableHandleResponderTerminate(e);
+  // }
+
+}

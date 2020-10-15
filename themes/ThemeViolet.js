@@ -2,7 +2,7 @@
 
 'use strict';
 
-import {PixelRatio, Dimensions} from 'react-native';
+import {PixelRatio} from 'react-native';
 
 //primary color
 const primaryColor = '#e64692';
@@ -21,9 +21,6 @@ const pixelSize = (function() {
   else return 1;
 })();
 
-//is pad
-const isPad = Dimensions.get('window').width >= 768 && Dimensions.get('window').height >= 768;
-
 export default {
   //General
   screenColor: '#000',
@@ -33,7 +30,6 @@ export default {
   defaultTextColor: defaultTextColor,
   pageColor: '#20253f',
   pixelSize: pixelSize,
-  isPad: isPad,
 
   //Label - color
   labelTextColor: defaultTextColor,
@@ -230,6 +226,7 @@ export default {
   //NavigationBar
   navType: 'ios', //'auto', 'ios', 'android'
   navStatusBarStyle: 'light-content', //'default', 'light-content'
+  navBarContentHeight: 44,
   navColor: '#383b5d',
   navTintColor: '#a3a4b3',
   navTitleColor: '#c1c2cc',
@@ -238,18 +235,22 @@ export default {
   navSeparatorColor: '#252a46',
   navSeparatorLineWidth: pixelSize,
 
+  //SegmentedBar
+  sbColor: defaultColor,
+  sbHeight: 40,
+  sbBtnPaddingTop: 8,
+  sbBtnPaddingBottom: 8,
+  sbBtnPaddingLeft: 8,
+  sbBtnPaddingRight: 8,
+  sbBtnTitleColor: '#989898',
+  sbBtnTextFontSize: 13,
+  sbBtnActiveTitleColor: primaryColor,
+  sbBtnActiveTextFontSize: 13,
+  sbIndicatorLineColor: primaryColor,
+  sbIndicatorLineWidth: 2,
+  sbIndicatorPositionPadding: 0,
+
   //SegmentedView
-  svBarColor: defaultColor,
-  svBarHeight: 40,
-  svBarBtnPaddingTop: 6,
-  svBarBtnPaddingBottom: 6,
-  svBarBtnPaddingLeft: 10,
-  svBarBtnPaddingRight: 10,
-  svBarBtnTitleColor: '#989898',
-  svBarBtnTextFontSize: 13,
-  svBarBtnActiveTitleColor: primaryColor,
-  svBarBtnActiveLineColor: primaryColor,
-  svBarBtnActiveLineWidth: 2,
 
   //TabView
   tvBarColor: '#383b5d',
@@ -265,6 +266,7 @@ export default {
   tvBarBtnTitleColor: '#626683',
   tvBarBtnTextFontSize: 10,
   tvBarBtnActiveTitleColor: '#c1c2cc',
+  tvBarBtnActiveTextFontSize: 10,
 
   //ListRow
   rowColor: defaultColor,
@@ -285,12 +287,28 @@ export default {
   rowSeparatorLineWidth: pixelSize,
   rowPaddingTitleDetail: 4,
   rowDetailLineHeight: 18,
+  rowActionButtonColor: '#494f6f',
+  rowActionButtonDangerColor: '#e34043',
+  rowActionButtonTitleColor: '#fff',
+  rowActionButtonDangerTitleColor: '#fff',
+  rowActionButtonTitleFontSize: 15,
+  rowActionButtonPaddingHorizontal: 12,
 
   //Carousel
   carouselDotSize: 9,
   carouselDotUseSize: 16,
   carouselDotColor: 'rgba(255, 255, 255, 0.4)',
   carouselActiveDotColor: 'rgba(255, 255, 255, 0.85)',
+
+  //Wheel
+  wheelColor: defaultColor,
+  wheelFontSize: 14,
+  wheelTextColor: defaultTextColor,
+  wheelHoleHeight: 28,
+  wheelHoleLineWidth: pixelSize,
+  wheelHoleLineColor: '#494d5e',
+  wheelMaskColor: defaultColor,
+  wheelMaskOpacity: 0.4,
 
   //Overlay
   overlayOpacity: 0.4,

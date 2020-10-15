@@ -2,10 +2,12 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {Platform, Navigator, View} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Platform, View, Dimensions} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
+import TeaNavigator from '../TeaNavigator/TeaNavigator';
 import BasePage from '../BasePage/BasePage';
 import NavigationBar from '../NavigationBar/NavigationBar';
 import KeyboardSpace from '../KeyboardSpace/KeyboardSpace';
@@ -21,22 +23,24 @@ export default class NavigationPage extends BasePage {
 
   static defaultProps = {
     ...BasePage.defaultProps,
-    scene: Navigator.SceneConfigs.PushFromRight,
+    scene: TeaNavigator.SceneConfigs.PushFromRight,
     title: null,
     showBackButton: false,
     navigationBarInsets: true,
   };
 
-  buildProps() {
-    super.buildProps();
+  constructor(props) {
+    super(props);
+    this.screenWidth = Dimensions.get('window').width;
+  }
 
-    let {navigationBarInsets, ...others} = this.props;
-    let pageContainerStyle = [{
-      flex: 1,
-      padding: 0,
-      marginTop: navigationBarInsets ? (Platform.OS === 'ios' ? 64 : 44) : 0,
-    }];
-    this.props = {navigationBarInsets, pageContainerStyle, ...others};
+  onLayout(e) {
+    let {width} = Dimensions.get('window');
+    if (width != this.screenWidth) {
+      this.screenWidth = width;
+      this.forceUpdate();
+    }
+    this.props.onLayout && this.props.onLayout(e);
   }
 
   renderNavigationTitle() {
@@ -59,7 +63,7 @@ export default class NavigationPage extends BasePage {
 
   renderNavigationBar() {
     return (
-      <NavigationBar 
+      <NavigationBar
         title={this.renderNavigationTitle()}
         leftView={this.renderNavigationLeftView()}
         rightView={this.renderNavigationRightView()}
@@ -72,11 +76,18 @@ export default class NavigationPage extends BasePage {
   }
 
   render() {
-    this.buildProps();
-    
-    let {autoKeyboardInsets, keyboardTopInsets, pageContainerStyle, ...others} = this.props;
+    let {style, children, scene, autoKeyboardInsets, keyboardTopInsets, title, showBackButton, navigationBarInsets, ...others} = this.props;
+
+    let {left: paddingLeft, right: paddingRight} = Theme.screenInset;
+    let pageContainerStyle = [{
+      flex: 1,
+      paddingLeft,
+      paddingRight,
+      marginTop: navigationBarInsets ? (Theme.navBarContentHeight + Theme.statusBarHeight) : 0,
+    }];
+
     return (
-      <View {...others}>
+      <View style={this.buildStyle()} onLayout={e => this.onLayout(e)} {...others}>
         <View style={{flex: 1}} >
           <View style={pageContainerStyle}>
             {this.renderPage()}
@@ -90,3 +101,5 @@ export default class NavigationPage extends BasePage {
 
 
 }
+
+

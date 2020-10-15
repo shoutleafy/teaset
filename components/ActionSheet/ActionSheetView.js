@@ -2,9 +2,11 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {View} from 'react-native';
 
+import Theme from 'teaset/themes/Theme';
 import Overlay from '../Overlay/Overlay';
 import ActionSheetItem from './ActionSheetItem';
 
@@ -13,12 +15,12 @@ export default class ActionSheetView extends Overlay.PullView {
   static propTypes = {
     ...Overlay.PullView.propTypes,
     items: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string.isRequired,
+      title: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.number]).isRequired,
       onPress: PropTypes.func,
       disabled: PropTypes.bool,
     })),
     cancelItem: PropTypes.shape({
-      title: PropTypes.string.isRequired,
+      title: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.number]).isRequired,
       onPress: PropTypes.func,
       disabled: PropTypes.bool,
     }),
@@ -44,15 +46,13 @@ export default class ActionSheetView extends Overlay.PullView {
     this.close(true);
   }
 
-  buildProps() {
-    super.buildProps();
+  renderContent() {
+    let {items, cancelItem} = this.props;
 
-    let {items, cancelItem, children, ...others} = this.props;
-
-    children = [];
+    let list = [];
     for (let i = 0; items && i < items.length; ++i) {
       let item = items[i];
-      children.push(
+      list.push(
         <this.constructor.Item
           key={'item' + i}
           title={item.title}
@@ -63,7 +63,7 @@ export default class ActionSheetView extends Overlay.PullView {
       );
     }
     if (cancelItem) {
-      children.push(
+      list.push(
         <this.constructor.Item
           key={'cancelItem'}
           type='cancel'
@@ -74,8 +74,17 @@ export default class ActionSheetView extends Overlay.PullView {
           />
       );
     }
+    list.push(
+      <View
+        style={{
+          backgroundColor: cancelItem ? Theme.asCancelItemColor : Theme.asItemColor,
+          height: Theme.screenInset.bottom
+        }}
+        key={'bottomSpace'}
+        />
+    );
 
-    this.props = {items, cancelItem, children, ...others};
+    return super.renderContent(list);
   }
 
 }

@@ -2,7 +2,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {StyleSheet, View, ScrollView} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
@@ -32,6 +33,7 @@ export default class Carousel extends Component {
     bounces: false,
     automaticallyAdjustContentInsets: false,
     scrollEventThrottle: 200,
+    scrollsToTop: false,
 
     carousel: true,
     interval: 3000,
@@ -51,7 +53,7 @@ export default class Carousel extends Component {
       pageIndex: 0,
     };
     this.cardIndex = null;
-    this.initByProps(props);
+    this.initByProps();
     this.setupTimer();
   }
 
@@ -65,9 +67,17 @@ export default class Carousel extends Component {
     this.removeTimer();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.initByProps(nextProps);
-    this.setupTimer();
+  componentDidUpdate(prevProps) {
+    let {children, carousel, direction, startIndex, cycle} = this.props;
+    let pageCount = children ? (children instanceof Array ? children.length : 1) : 0;
+    if (pageCount != this.pageCount
+      || carousel != prevProps.carousel
+      || direction != prevProps.direction
+      || startIndex != prevProps.startIndex
+      || cycle != prevProps.cycle) {
+      this.initByProps();
+      this.setupTimer();
+    }
   }
 
   //滚动到指定页
@@ -81,8 +91,8 @@ export default class Carousel extends Component {
   }
 
   //初始化轮播参数
-  initByProps(props) {
-    let {children, carousel, direction, startIndex, cycle} = props;
+  initByProps() {
+    let {children, carousel, direction, startIndex, cycle} = this.props;
 
     //页数
     this.pageCount = children ? (children instanceof Array ? children.length : 1) : 0;
@@ -130,9 +140,11 @@ export default class Carousel extends Component {
     let {width, height} = this.state;
     if (cardIndex < 0) cardIndex = 0;
     else if (cardIndex >= this.cardCount) cardIndex = this.cardCount - 1;
-    if (this.props.horizontal)
-      this.refs.scrollView.scrollTo({x: width * cardIndex, y: 0, animated: animated});
-    else this.refs.scrollView.scrollTo({x: 0, y: height * cardIndex, animated: animated});
+    if (this.refs.scrollView) {
+      if (this.props.horizontal)
+        this.refs.scrollView.scrollTo({x: width * cardIndex, y: 0, animated: animated});
+      else this.refs.scrollView.scrollTo({x: 0, y: height * cardIndex, animated: animated});      
+    }
   }
 
   //滚动到下一张卡片
@@ -229,13 +241,13 @@ export default class Carousel extends Component {
   }
 
   render() {
-    let {style, children, horizontal, contentContainerStyle, control, onScroll, onLayout, ...others} = this.props;
+    let {style, children, horizontal, contentContainerStyle, control, onScroll, onLayout, onChange, direction, ...others} = this.props;
     let {width, height, pageIndex} = this.state;
     if (width > 0 && height > 0) {
       let fixStyle;
       if (horizontal) fixStyle = {width: width * this.cardCount, height: height};
       else fixStyle = {width: width, height: height * this.cardCount};
-      contentContainerStyle = [contentContainerStyle, fixStyle];
+      contentContainerStyle = [].concat(contentContainerStyle).concat(fixStyle);
     }
     if (React.isValidElement(control)) {
       control = React.cloneElement(control, {index: pageIndex, total: this.pageCount, carousel: this});

@@ -3,7 +3,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {StyleSheet, Platform, View, Keyboard, LayoutAnimation} from 'react-native';
 
 export default class KeyboardSpace extends Component {
@@ -47,8 +48,8 @@ export default class KeyboardSpace extends Component {
     }
   }
 
-  componentWillUpdate(props, state) {
-    if (state.keyboardHeight !== this.state.keyboardHeight) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.keyboardHeight !== this.state.keyboardHeight) {
       LayoutAnimation.configureNext({
         duration: 500,
         create: {

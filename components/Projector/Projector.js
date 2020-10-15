@@ -2,17 +2,18 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {StyleSheet, View, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
 export default class Projector extends Component {
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     index: PropTypes.number,
-    slideStyle: View.propTypes.style,
+    slideStyle: ViewPropTypes.style,
   };
 
   static defaultProps = {
@@ -20,29 +21,14 @@ export default class Projector extends Component {
     index: 0,
   };
 
-  constructor(props) {
-    super(props);
-    this.slideShowns = this.initSlideShowns(props.children);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let nextSlideShowns = this.initSlideShowns(nextProps.children);
-    if (nextSlideShowns.length != this.slideShowns.length) {
-      this.slideShowns = nextSlideShowns;
-    }
-  }
-
-  initSlideShowns(children) {
-    if (children instanceof Array) return children.map(item => false);
-    else if (children) return [false];
-    return [];
-  }
-
   render() {
     let {index, slideStyle, children, ...others} = this.props;
     if (!(children instanceof Array)) {
       if (children) children = [children];
       else children = [];
+    }
+    if (!this.slideShowns || this.slideShowns.length !== children.length) {
+      this.slideShowns = children.map(item => false);
     }
     return (
       <View {...others}>

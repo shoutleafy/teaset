@@ -2,8 +2,9 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
-import {StyleSheet, Animated, View, PanResponder, Platform, BackAndroid} from 'react-native';
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
+import ReactNative, {StyleSheet, Animated, View, PanResponder, Platform, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 import KeyboardSpace from '../KeyboardSpace/KeyboardSpace';
@@ -11,12 +12,13 @@ import KeyboardSpace from '../KeyboardSpace/KeyboardSpace';
 export default class OverlayView extends Component {
 
   static propTypes = {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     modal: PropTypes.bool,
     animated: PropTypes.bool,
     overlayOpacity: PropTypes.number,
-    overlayPointerEvents: View.propTypes.pointerEvents,
+    overlayPointerEvents: ViewPropTypes.pointerEvents,
     autoKeyboardInsets: PropTypes.bool,
+    closeOnHardwareBackPress: PropTypes.bool, //android only
     onAppearCompleted: PropTypes.func,
     onDisappearCompleted: PropTypes.func,
     onCloseRequest: PropTypes.func, //(overlayView)
@@ -27,6 +29,7 @@ export default class OverlayView extends Component {
     animated: false,
     overlayPointerEvents: 'auto',
     autoKeyboardInsets: false,
+    closeOnHardwareBackPress: true,
   };
 
   constructor(props) {
@@ -41,17 +44,19 @@ export default class OverlayView extends Component {
     }
   }
 
-  componentWillMount() {
-    if (Platform.OS === 'android') {
-      this.backListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        this.closeRequest();
-        return true;
-      });
-    }
-  }
-
   componentDidMount() {
     this.appearAfterMount && this.appear();
+    if (Platform.OS === 'android') {
+      let BackHandler = ReactNative.BackHandler ? ReactNative.BackHandler : ReactNative.BackAndroid;
+      this.backListener = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (this.props.closeOnHardwareBackPress) {
+          this.closeRequest();
+          return true;          
+        } else {
+          return false;
+        }
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -71,18 +76,24 @@ export default class OverlayView extends Component {
   }
 
   get appearAnimates() {
+    let duration = 200;
     let animates = [
-      Animated.spring(this.state.overlayOpacity, {
+      Animated.timing(this.state.overlayOpacity, {
         toValue: this.overlayOpacity,
+        duration,
+        useNativeDriver: false,
       })
     ];
     return animates;
   }
   
   get disappearAnimates() {
+    let duration = 200;
     let animates = [
-      Animated.spring(this.state.overlayOpacity, {
+      Animated.timing(this.state.overlayOpacity, {
         toValue: 0,
+        duration,
+        useNativeDriver: false,
       })
     ];
     return animates;
@@ -90,6 +101,10 @@ export default class OverlayView extends Component {
 
   get appearAfterMount() {
     return true;
+  }
+
+  get overlayPointerEvents() { //override in Toast
+    return this.props.overlayPointerEvents;
   }
 
   appear(animated = this.props.animated, additionAnimates = null) {
@@ -140,10 +155,10 @@ export default class OverlayView extends Component {
     else if (!modal) this.close();
   }
 
-  buildProps() {
-    let {style, ...others} = this.props;
+  buildStyle() {
+    let {style} = this.props;
     style = [{backgroundColor: 'rgba(0, 0, 0, 0)', flex: 1}].concat(style);
-    this.props = {style, ...others};
+    return style;
   }
 
   renderContent() {
@@ -151,16 +166,14 @@ export default class OverlayView extends Component {
   }
 
   render() {
-    this.buildProps();
-
-    let {style, overlayPointerEvents, autoKeyboardInsets, ...others} = this.props;
+    let {autoKeyboardInsets} = this.props;
     return (
-      <View style={styles.screen} pointerEvents={overlayPointerEvents}>
+      <View style={styles.screen} pointerEvents={this.overlayPointerEvents}>
         <Animated.View
           style={[styles.screen, {backgroundColor: '#000', opacity: this.state.overlayOpacity}]}
           {...this.panResponder.panHandlers}
           />
-        <View style={style} pointerEvents='box-none'>
+        <View style={this.buildStyle()} pointerEvents='box-none'>
           {this.renderContent()}
         </View>
         {autoKeyboardInsets ? <KeyboardSpace /> : null}

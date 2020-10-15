@@ -2,8 +2,9 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {StyleSheet, View, Text, TextInput, Image, LayoutAnimation} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {StyleSheet, View, Text, TextInput, Image, LayoutAnimation, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
@@ -11,7 +12,7 @@ export default class SearchInput extends Component {
 
   static propTypes = {
     ...TextInput.propTypes,
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     inputStyle: TextInput.propTypes.style,
     iconSize: PropTypes.number,
     disabled: PropTypes.bool,
@@ -34,8 +35,8 @@ export default class SearchInput extends Component {
     };
   }
 
-  componentWillUpdate(props, state) {
-    if (state.editing !== this.state.editing) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.editing !== this.state.editing) {
       LayoutAnimation.configureNext({
         duration: 500,
         create: {
@@ -51,35 +52,20 @@ export default class SearchInput extends Component {
     }
   }
 
-  buildProps() {
-    let {style, inputStyle, iconSize, disabled, placeholderTextColor, pointerEvents, ...others} = this.props;
+  focus() {
+    return this.refs.textInput && this.refs.textInput.focus();
+  }
 
-    style = [{
-      backgroundColor: Theme.siColor,
-      borderColor: Theme.siBorderColor,
-      borderWidth: Theme.siBorderWidth,
-      borderRadius: Theme.siBorderRadius,
-    }].concat(style);
-    if (disabled) style = style.concat({opacity: Theme.siDisabledOpacity})
+  blur() {
+    return this.refs.textInput && this.refs.textInput.blur();
+  }
 
-    let height = StyleSheet.flatten(style).height;
-    inputStyle = [{
-      color: Theme.siTextColor,
-      fontSize: Theme.siFontSize,
-      height: height ? height : Theme.siHeight,
-      paddingVertical: Theme.siPaddingVertical,
-      paddingHorizontal: Theme.siPaddingHorizontal,
-    }].concat(inputStyle).concat({
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-    });
+  isFocused() {
+    return this.refs.textInput && this.refs.textInput.isFocused();
+  }
 
-    if (!iconSize && iconSize !== 0) iconSize = Theme.siIconSize;
-
-    if (!placeholderTextColor) placeholderTextColor = Theme.siPlaceholderTextColor;
-
-    if (disabled) pointerEvents = 'none';
-
-    this.props = {style, inputStyle, iconSize, disabled, placeholderTextColor, pointerEvents, ...others};
+  clear() {
+    return this.refs.textInput && this.refs.textInput.clear();
   }
 
   onContainerLayout(e) {
@@ -107,11 +93,26 @@ export default class SearchInput extends Component {
   }
 
   render() {
-    this.buildProps();
+    let {style, children, inputStyle, iconSize, disabled, value, placeholder, placeholderTextColor, selectionColor, pointerEvents, onBlur, onFocus, onChangeText, ...others} = this.props;
 
-    let {style, value, inputStyle, iconSize, placeholder, placeholderTextColor, selectionColor, pointerEvents, onBlur, onFocus, onChangeText, ...others} = this.props;
+    style = [{
+      backgroundColor: Theme.siColor,
+      borderColor: Theme.siBorderColor,
+      borderWidth: Theme.siBorderWidth,
+      borderRadius: Theme.siBorderRadius,
+    }].concat(style);
+    if (disabled) style = style.concat({opacity: Theme.siDisabledOpacity})
 
-    if (value === undefined) value = this.state.value;
+    let height = StyleSheet.flatten(style).height;
+    inputStyle = [{
+      color: Theme.siTextColor,
+      fontSize: Theme.siFontSize,
+      height: height ? height : Theme.siHeight,
+      paddingVertical: Theme.siPaddingVertical,
+      paddingHorizontal: Theme.siPaddingHorizontal,
+    }].concat(inputStyle).concat({
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+    });
 
     let paddingSize;
     let fs = StyleSheet.flatten(inputStyle);
@@ -119,6 +120,11 @@ export default class SearchInput extends Component {
     else if (fs.paddingHorizontal || fs.paddingHorizontal === 0) paddingSize = fs.paddingHorizontal;
     else if (fs.padding || fs.padding === 0) paddingSize = fs.padding;
     else paddingSize = 0;
+
+    if (value === undefined) value = this.state.value;
+    if (!iconSize && iconSize !== 0) iconSize = Theme.siIconSize;
+    if (!placeholderTextColor) placeholderTextColor = Theme.siPlaceholderTextColor;
+    if (disabled) pointerEvents = 'none';
 
     return (
       <View style={style} pointerEvents={pointerEvents}>
@@ -146,6 +152,7 @@ export default class SearchInput extends Component {
             onChangeText={text => this.onChangeText(text)}
             selectionColor={this.state.selectionColor ? this.state.selectionColor : selectionColor}
             {...others}
+            ref='textInput'
             />
         </View>
       </View>

@@ -10,10 +10,11 @@ Select 组件定义一个选择框。
 | valueStyle | 同Text.style |  | 值显示样式。
 | items | array |  | 可选择列表数组, 数组元素可以是任何类型。
 | getItemValue | func |  | 取 items 数组元素的 value 值, 传入参数为(item, index), item = items[index], 默认直接使用 item
-| getItemText | func |  | 取 items 数组元素的显示文本, 传入参数为(item, index), item = items[index], 默认直接使用 item
+| getItemText | func |  | 取 items 数组元素的显示文本或 React Native 组件, 传入参数为(item, index), item = items[index], 默认直接使用 item
 | pickerType | string | 'auto' | 选择器类型。<br/>- auto: 自动选择, 当设备为 Pad(宽和高均大于768)时使用 PopoverPicker, 否则使用 PullPicker<br/>- pull: PullPicker<br/>- popover: PopoverPicker
 | pickerTitle | string |  | PullPicker 选择器标题。
 | editable | bool | true | 是否可编辑。
+| icon | string<br/>同Image.source<br/>element | 'default' | 图标, 可以是 string 枚举、 Image.source 或 React Native 组件。<br/>- none: 无图标<br/>- default: 默认图标
 | iconTintColor | string |  | 组件右侧指示图标颜色。
 | placeholder | string |  | 占位字符串, value 为空时显示此字符串。
 | placeholderTextColor | string |  | 占位字符串文本颜色。

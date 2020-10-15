@@ -2,11 +2,13 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {Navigator, View, Text} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {View, Text} from 'react-native';
 
 import TeaNavigatorScene from './TeaNavigatorScene';
 
+import {Navigator} from 'react-native-legacy-components';
 //replace NavigatorScene, optimize the effect of the scene
 Navigator.SceneConfigs = TeaNavigatorScene;
 
@@ -32,6 +34,8 @@ export default class TeaNavigator extends Component {
     )
   };
 
+  static SceneConfigs = TeaNavigatorScene;
+
   static childContextTypes = {
     navigator: PropTypes.func,
   };
@@ -52,7 +56,7 @@ export default class TeaNavigator extends Component {
           configureScene={route => {
             if (route.scene) return route.scene;
             else if (route.view.props.scene) return route.view.props.scene;
-            else return Navigator.SceneConfigs.PushFromRight;
+            else return TeaNavigatorScene.PushFromRight;
           }}
           renderScene={(route, navigator) => {
             return React.cloneElement(route.view, {ref: v => route.viewRef = v});

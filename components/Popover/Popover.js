@@ -2,15 +2,16 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
-import {StyleSheet, View} from 'react-native';
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
+import {StyleSheet, View, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
 export default class Popover extends Component {
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     arrow: PropTypes.oneOf([
       'none',
       'topLeft',
@@ -64,8 +65,8 @@ export default class Popover extends Component {
     return style;
   }
 
-  buildProps() {
-    let {style, arrow, paddingCorner, ...others} = this.props;
+  buildStyle() {
+    let {style, arrow, paddingCorner, headerStyle, arrowStyle, contentStyle, popoverStyle} = this.props;
 
     style = [{
       backgroundColor: Theme.popoverColor,
@@ -78,10 +79,12 @@ export default class Popover extends Component {
     let {backgroundColor, borderColor, borderRadius, borderWidth} = fs;
 
     let arrowSize = 7; //Square side length
-    let headerSize = Math.sqrt(arrowSize * arrowSize * 2) / 2 + borderWidth; //The half-length of the square diagonal: sqrt(7^2 + 7^2) / 2 = 4.95
+    let halfSquareSize = Math.sqrt(arrowSize * arrowSize * 2) / 2; //The half-length of the square diagonal: sqrt(7^2 + 7^2) / 2 = 4.95
+    halfSquareSize = Math.ceil(halfSquareSize / Theme.pixelSize) * Theme.pixelSize;
+    let headerSize = halfSquareSize + borderWidth;
     let headerPadding = headerSize - arrowSize / 2; //Let the center of square on the edge: 5 - (7 / 2) = 1.5
     let headerPaddingCorner = paddingCorner ? paddingCorner : Theme.popoverPaddingCorner;
-    let contentPadding = headerSize - borderWidth;
+    let contentPadding = halfSquareSize;
 
     let headerLayouts = {
       none:        {},
@@ -130,44 +133,45 @@ export default class Popover extends Component {
     }
 
     if (!arrow) arrow = 'none';
+    let useArrow = arrow;
     switch (arrow) {
       case 'topLeft':
       case 'topRight':
-        if (headerPaddingCorner + contentPadding > this.state.width / 2) arrow = 'top';
+        if (headerPaddingCorner + contentPadding > this.state.width / 2) useArrow = 'top';
         break;
       case 'rightTop':
       case 'rightBottom':
-        if (headerPaddingCorner + contentPadding > this.state.height / 2) arrow = 'right';
+        if (headerPaddingCorner + contentPadding > this.state.height / 2) useArrow = 'right';
         break;
       case 'bottomRight':
       case 'bottomLeft':
-        if (headerPaddingCorner + contentPadding > this.state.width / 2) arrow = 'bottom';
+        if (headerPaddingCorner + contentPadding > this.state.width / 2) useArrow = 'bottom';
         break;
       case 'leftBottom':
       case 'leftTop':
-        if (headerPaddingCorner + contentPadding > this.state.height / 2) arrow = 'left';
+        if (headerPaddingCorner + contentPadding > this.state.height / 2) useArrow = 'left';
         break;
     }
 
-    let headerStyle = Object.assign({
+    headerStyle = Object.assign({
       position: 'absolute',
       overflow: 'hidden',
       backgroundColor: 'rgba(0, 0, 0, 0)',
-    }, headerLayouts[arrow]);
-    let arrowStyle = Object.assign({
+    }, headerLayouts[useArrow]);
+    arrowStyle = Object.assign({
       backgroundColor,
       width: arrowSize,
       height: arrowSize,
       borderColor,
       borderTopWidth: borderWidth,
       borderLeftWidth: borderWidth,
-    }, arrowLayouts[arrow]);
-    let contentStyle = this.filterContentStyle(fs);
-    let popoverStyle = [this.filterPopoverStyle(fs, arrow === 'none'), {
-      backgroundColor: arrow === 'none' ? Theme.popoverColor : 'rgba(0, 0, 0, 0)', //Transparent background will cause a warning at debug mode
-    }].concat(popoverLayouts[arrow]);
+    }, arrowLayouts[useArrow]);
+    contentStyle = this.filterContentStyle(fs);
+    popoverStyle = [this.filterPopoverStyle(fs, useArrow === 'none'), {
+      backgroundColor: useArrow === 'none' ? Theme.popoverColor : 'rgba(0, 0, 0, 0)', //Transparent background will cause a warning at debug mode
+    }].concat(popoverLayouts[useArrow]);
 
-    this.props = {style, arrow, paddingCorner, headerStyle, arrowStyle, contentStyle, popoverStyle, ...others};
+    return {popoverStyle, contentStyle, headerStyle, arrowStyle};
   }
 
   onLayout(e) {
@@ -179,21 +183,17 @@ export default class Popover extends Component {
   }
 
   render() {
-    this.buildProps();
-
-    let {style, arrow, headerStyle, arrowStyle, contentStyle, popoverStyle, children, onLayout, ...others} = this.props;
+    let {style, children, arrow, paddingCorner, onLayout, ...others} = this.props;
+    let {popoverStyle, contentStyle, headerStyle, arrowStyle} = this.buildStyle();
     return (
       <View style={popoverStyle} onLayout={(e) => this.onLayout(e)} {...others}>
-        <View style={contentStyle} activeOpacity={1}>
+        <View style={contentStyle}>
           {children}
         </View>
-        {!arrow || arrow === 'none' ? null :
-          <View style={headerStyle}>
-            <View style={arrowStyle} />
-          </View>
-        }
+        {!arrow || arrow === 'none' ? null : <View style={headerStyle}><View style={arrowStyle} /></View>}
       </View>
     );
   }
 
 }
+

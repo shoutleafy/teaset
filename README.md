@@ -9,22 +9,41 @@ npm install --save teaset
 ```
 
 # Example
-In the Teaset package directory:
+Clone teaset project from github (or download zip file):
 ```
-cd example
+git clone https://github.com/rilyu/teaset.git
+cd teaset/example
 npm install
 ```
 To run example on iOS:
 ```
+cd ios && pod install && cd ..
 react-native run-ios
 ```
 To run example on Android:
 ```
 react-native run-android
 ```
+**Tips: In the Android system, the animations is not smooth, switch to the release mode can be resolved.**
+
+## iPhoneX
+iPhoneX and iPhoneXS are fully supported after 0.6.0, and this option is **true** by default.
+
+If SafeAreaView is used, please use ```Theme.set({fitIPhoneX: false})``` to manually turn off it.
+
+## Redux
+If you use Redux, you need to use the ```<TopView>``` package container (thanks [@Alexorz](https://github.com/Alexorz) ).
+
+```
+import { TopView } from 'teaset';
+
+container => () => <Provider store={store}><TopView>{container}</TopView></Provider>
+```
 
 # Documentation
 The document is being written, please refer to the example source code.
+
+[Translation project](https://github.com/emersonlaurentino/teaset/projects/1)
 
 # Screenshots
 
@@ -75,14 +94,24 @@ The document is being written, please refer to the example source code.
 ## Projector
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/11-Projector.png?raw=true)
 
+## SegmentedBar
+![](https://github.com/rilyu/teaset/blob/master/screenshots/11a-SegmentedBar1.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/11a-SegmentedBar2.png?raw=true)
+![](https://github.com/rilyu/teaset/blob/master/screenshots/11a-SegmentedBar3.png?raw=true)
+
 ## SegmentedView
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/12-SegmentedView.png?raw=true)
 
 ## TabView
-![](https://github.com/rilyu/teaset/blob/master/screenshots/13-TabView.png?raw=true)
+![](https://github.com/rilyu/teaset/blob/master/screenshots/13-TabView.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/13-TabView2.png?raw=true)
 
 ## TransformView
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/14-TransformView.png?raw=true)
+
+## AlbumView
+![](https://github.com/rilyu/teaset/blob/master/screenshots/14a-AlbumView1.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/14a-AlbumView2.png?raw=true)
+
+## Wheel
+![](https://github.com/rilyu/teaset/blob/master/screenshots/14b-Wheel.png?raw=true)
 
 ## Overlay
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/15-Overlay1.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/15-Overlay2.png?raw=true)
@@ -107,6 +136,9 @@ The document is being written, please refer to the example source code.
 
 ## Menu
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/20a-Menu1.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/20a-Menu2.png?raw=true)
+
+## Drawer
+![](https://github.com/rilyu/teaset/blob/master/screenshots/20b-Drawer1.png?raw=true) ![](https://github.com/rilyu/teaset/blob/master/screenshots/20b-Drawer2.png?raw=true)
 
 ## ModalIndicator
 ![](https://github.com/rilyu/teaset/blob/master/screenshots/21-ModalIndicator.png?raw=true)

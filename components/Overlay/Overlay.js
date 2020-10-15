@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
 import {View} from 'react-native';
 
 import TopView from './TopView';
@@ -19,11 +19,11 @@ export default class Overlay {
   static PopoverView = OverlayPopoverView;
 
   // base props
-  //   style: View.propTypes.style,
+  //   style: ViewPropTypes.style,
   //   modal: PropTypes.bool,
   //   animated: PropTypes.bool,
   //   overlayOpacity: PropTypes.number,
-  //   overlayPointerEvents: View.propTypes.pointerEvents,
+  //   overlayPointerEvents: ViewPropTypes.pointerEvents,
   static show(overlayView) {
     let key;
     let onDisappearCompletedSave = overlayView.props.onDisappearCompleted;
@@ -39,6 +39,14 @@ export default class Overlay {
 
   static hide(key) {
     TopView.remove(key);
+  }
+
+  static transformRoot(transform, animated, animatesOnly = null) {
+    TopView.transform(transform, animated, animatesOnly);
+  }
+
+  static restoreRoot(animated, animatesOnly = null) {
+    TopView.restore(animated, animatesOnly);
   }
 
 }

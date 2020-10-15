@@ -2,15 +2,16 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {StyleSheet, View, Text, TouchableOpacity, ViewPropTypes} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
 
 export default class CarouselControl extends Component {
 
   static propTypes = {
-    ...View.propTypes,
+    ...ViewPropTypes,
     dot: PropTypes.element,
     activeDot: PropTypes.element,
   };

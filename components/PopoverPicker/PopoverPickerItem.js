@@ -2,7 +2,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
@@ -15,9 +16,8 @@ export default class PopoverPickerItem extends Component {
     selected: PropTypes.bool,
   };
 
-  buildProps() {
-    let {style, title, selected, ...others} = this.props;
-
+  buildStyle() {
+    let {style} = this.props;
     style = [{
       backgroundColor: Theme.poppItemColor,
       paddingLeft: Theme.poppItemPaddingLeft,
@@ -29,16 +29,11 @@ export default class PopoverPickerItem extends Component {
       flexDirection: 'row',
       alignItems: 'center',
     }].concat(style);
-    let imageStyle = {
-      width: Theme.poppAccessoryWidth,
-      height: Theme.poppAccessoryHeight,
-      tintColor: Theme.poppAccessoryCheckColor,
-    };
-    let accessory = (
-      <View style={{paddingLeft: Theme.poppAccessoryPaddingLeft}}>
-        <Image style={imageStyle} source={selected ? require('teaset/icons/check.png') : null} />
-      </View>
-    );
+    return style;
+  }
+
+  renderTitle() {
+    let {title} = this.props;
     if (typeof title === 'string' || typeof title === 'number') {
       let titleStyle = {
         color: Theme.poppItemTitleColor,
@@ -49,19 +44,31 @@ export default class PopoverPickerItem extends Component {
       };
       title = <Text style={titleStyle} numberOfLines={1}>{title}</Text>
     }
+    return title;
+  }
 
-    this.props = {style, title, accessory, selected, ...others};
+  renderAccessory() {
+    let {accessory, selected} = this.props;
+    let imageStyle = {
+      width: Theme.poppAccessoryWidth,
+      height: Theme.poppAccessoryHeight,
+      tintColor: Theme.poppAccessoryCheckColor,
+    };
+    return (
+      <View style={{paddingLeft: Theme.poppAccessoryPaddingLeft}}>
+        <Image style={imageStyle} source={selected ? require('../../icons/check.png') : require('../../icons/empty.png')} />
+      </View>
+    );
   }
 
   render() {
-    this.buildProps();
-
-    let {title, accessory, ...others} = this.props;
+    let {style, children, title, selected, ...others} = this.props;
     return (
-      <TouchableOpacity {...others}>
-        {title}
-        {accessory}
+      <TouchableOpacity style={this.buildStyle()} {...others}>
+        {this.renderTitle()}
+        {this.renderAccessory()}
       </TouchableOpacity>
     );
   }
 }
+

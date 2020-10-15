@@ -2,7 +2,8 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {View, ScrollView} from 'react-native';
 
 import Theme from 'teaset/themes/Theme';
@@ -33,9 +34,9 @@ export default class ActionPopoverView extends Overlay.PopoverView {
     item.onPress && item.onPress();
   }
 
-  buildProps() {
-    let {popoverStyle, directionInsets, items, children, ...others} = this.props;
-
+  buildPopoverStyle() {
+    this.defaultDirectionInsets = Theme.apDirectionInsets;
+    let {popoverStyle, arrow} = super.buildPopoverStyle();
     popoverStyle = [{
       backgroundColor: Theme.apColor,
       paddingVertical: Theme.apPaddingVertical,
@@ -43,15 +44,15 @@ export default class ActionPopoverView extends Overlay.PopoverView {
       borderRadius: Theme.apBorderRadius,
       flexDirection: 'row',
     }].concat(popoverStyle);
+    return {popoverStyle, arrow};
+  }
 
-    if (!directionInsets && directionInsets !== 0) {
-      directionInsets = Theme.apDirectionInsets;
-    }
-
-    children = [];
+  renderContent() {
+    let {items} = this.props;
+    let list = [];
     for (let i = 0; items && i < items.length; ++i) {
       let item = items[i];
-      children.push(
+      list.push(
         <this.constructor.Item
           key={'item' + i}
           title={item.title}
@@ -60,9 +61,7 @@ export default class ActionPopoverView extends Overlay.PopoverView {
           />
       );
     }
-
-    this.props = {popoverStyle, directionInsets, items, children, ...others} ;
-
-    super.buildProps();
+    return super.renderContent(list);
   }
+
 }

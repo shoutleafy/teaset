@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
 import {View} from 'react-native';
 
 import Overlay from '../Overlay/Overlay';
@@ -34,7 +34,7 @@ export default class Toast extends Overlay {
       switch (duration) {
         case 'long': duration = 3500; break;
         default: duration = 2000; break;
-      }      
+      }
     }
     setTimeout(() => this.hide(key), duration);
 

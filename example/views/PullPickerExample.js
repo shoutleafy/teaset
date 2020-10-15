@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {View, ScrollView} from 'react-native';
 
 import {NavigationPage, ListRow, PullPicker} from 'teaset';
@@ -18,15 +18,15 @@ export default class PullPickerExample extends NavigationPage {
   constructor(props) {
     super(props);
     this.items = [
-      'Apple',
-      'Banana',
-      'Cherry',
-      'Durian',
-      'Filbert',
-      'Grape',
-      'Hickory',
-      'Lemon',
-      'Mango',
+      'Aged Pu\'er',
+      'Bohea',
+      'Chrysanthemum',
+      'Hyson',
+      'Jasmine',
+      'Keemun',
+      'Loungjing',
+      'Pekoe',
+      'Tieguanyin',
     ];
     Object.assign(this.state, {
       selectedIndex: null,

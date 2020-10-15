@@ -2,8 +2,9 @@
 
 'use strict';
 
-import React, {Component, PropTypes} from "react";
-import {Animated, View} from 'react-native';
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
+import {Animated, View, ViewPropTypes} from 'react-native';
 
 import OverlayView from './OverlayView';
 
@@ -12,7 +13,7 @@ export default class OverlayPopView extends OverlayView {
   static propTypes = {
     ...OverlayView.propTypes,
     type: PropTypes.oneOf(['zoomOut', 'zoomIn', 'custom']),
-    containerStyle: View.propTypes.style,
+    containerStyle: ViewPropTypes.style,
     customBounds: PropTypes.shape({
       x: PropTypes.number.isRequired,
       y: PropTypes.number.isRequired,
@@ -47,22 +48,27 @@ export default class OverlayPopView extends OverlayView {
       Animated.timing(this.state.opacity, {
         toValue: 1,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.translateX, {
         toValue: 0,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.translateY, {
         toValue: 0,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.scaleX, {
         toValue: 1,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.scaleY, {
         toValue: 1,
         duration,
+        useNativeDriver: false,
       }),
     ]);
     return animates;
@@ -76,22 +82,27 @@ export default class OverlayPopView extends OverlayView {
       Animated.timing(this.state.opacity, {
         toValue: 0,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.translateX, {
         toValue: ft.translateX,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.translateY, {
         toValue: ft.translateY,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.scaleX, {
         toValue: ft.scaleX,
         duration,
+        useNativeDriver: false,
       }),
       Animated.timing(this.state.scaleY, {
         toValue: ft.scaleY,
         duration,
+        useNativeDriver: false,
       }),
     ]);
     return animates;
@@ -155,10 +166,8 @@ export default class OverlayPopView extends OverlayView {
     }
   }
 
-  buildProps() {
-    super.buildProps();
-
-    let {containerStyle, ...others} = this.props;
+  renderContent(content = null) {
+    let {containerStyle, children} = this.props;
     let {opacity, translateX, translateY, scaleX, scaleY} = this.state;
 
     containerStyle = [{
@@ -170,14 +179,9 @@ export default class OverlayPopView extends OverlayView {
       transform: [{translateX}, {translateY}, {scaleX}, {scaleY}],
     });
 
-    this.props = {containerStyle, ...others};
-  }
-
-  renderContent() {
-    let {containerStyle, children} = this.props;
     return (
       <Animated.View style={containerStyle} pointerEvents='box-none' onLayout={(e) => this.onLayout(e)}>
-        {children}
+        {content ? content : children}
       </Animated.View>
     );
   }
